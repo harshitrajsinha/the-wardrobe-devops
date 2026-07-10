@@ -1,0 +1,199 @@
+name: boutique-shop
+
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./src/frontend/Dockerfile.compose
+    image: test/frontend:latest
+    container_name: frontend
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: ./src/frontend/src/.env
+        required: true
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    depends_on:
+      - cartservice
+      - productcatalogservice
+      - checkoutservice
+      - currencyservice
+  
+  redis:
+    image: redis:alpine3.23
+    # container_name: redis # container name should not be fixed if creating replicas
+    ports:
+      - "6379"
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      # resources:
+      #   limits:
+      #     cpus: '1'
+      #     memory: 50M
+
+  cartservice:
+    build:
+      context: .
+      dockerfile: ./src/cartservice/Dockerfile.compose
+    image: test/cartservice:latest
+    container_name: cartservice
+    ports:
+      - "7070:7070"
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    depends_on:
+      - redis
+
+  productcatalogservice:
+    build:
+      context: .
+      dockerfile: ./src/productcatalogservice/Dockerfile.compose
+    image: test/productcatalogservice:latest
+    container_name: productcatalogservice
+    env_file:
+      - path: ./src/productcatalogservice/src/.env
+        required: true
+    ports:
+      - "3550:3550"
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+  
+  checkoutservice:
+    build:
+      context: .
+      dockerfile: ./src/checkoutservice/Dockerfile.compose
+    image: test/checkoutservice:latest
+    container_name: checkoutservice
+    ports:
+      - "5050:5050"
+    env_file:
+      - path: ./src/checkoutservice/src/.env
+        required: true
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    depends_on:
+      - productcatalogservice
+      - cartservice
+      - currencyservice
+
+  currencyservice:
+    build:
+      context: .
+      dockerfile: ./src/currencyservice/Dockerfile.compose
+    image: test/currencyservice:latest
+    container_name: currencyservice
+    ports:
+      - "7000:7000"
+    env_file:
+      - path: ./src/currencyservice/src/.env
+        required: true
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+  
+  paymentservice:
+    build:
+      context: .
+      dockerfile: ./src/paymentservice/Dockerfile.compose
+    image: test/paymentservice:latest
+    container_name: paymentservice
+    ports:
+      - "50052:50052"
+    env_file:
+      - path: ./src/paymentservice/src/.env
+        required: true
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    
+  shippingservice:
+    build:
+      context: .
+      dockerfile: ./src/shippingservice/Dockerfile.compose
+    image: test/shippingservice:latest
+    container_name: shippingservice
+    ports:
+      - "50051:50051"
+    env_file:
+      - path: ./src/shippingservice/src/.env
+        required: true
+    networks:
+      - boutique-shop
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
+  # loadgenerator:
+  #   build:
+  #     context: .
+  #     dockerfile: ./src/loadgenerator/Dockerfile.compose
+  #   depends_on:
+  #     - frontend
+  #   networks:
+  #     - boutique-shop
+  #   environment:
+  #     FRONTEND_ADDR: frontend:8080
+  #     USERS: 10
+  #     RATE: 1
+  #   restart: unless-stopped
+
+
+networks:
+  boutique-shop:
+    name: boutique-shop
+    driver: bridge

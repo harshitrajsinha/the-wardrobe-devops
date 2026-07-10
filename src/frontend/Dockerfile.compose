@@ -1,0 +1,32 @@
+# Context = root of project directory (for docker compose)
+
+FROM golang:1.26.2-alpine AS builder
+
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
+WORKDIR /app
+
+COPY src/frontend/src/go.mod src/frontend/src/go.sum ./
+RUN go mod download
+
+COPY src/frontend/src/. .
+
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -o frontend .
+
+FROM alpine:latest
+
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /app
+
+COPY --from=builder app/frontend /app/server
+
+COPY src/frontend/src/templates ./templates
+COPY src/frontend/src/static ./static
+
+EXPOSE 8080
+
+USER appuser
+
+ENTRYPOINT ["/app/server"]
