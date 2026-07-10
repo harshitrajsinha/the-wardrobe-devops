@@ -10,7 +10,7 @@ RUN go mod download
 
 COPY ./src/. .
 
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -o checkoutservice .
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=0 go build -o productcatalogservice .
 
 FROM alpine:latest
 
@@ -18,10 +18,10 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-COPY --from=builder app/checkoutservice /app/checkoutservice
+COPY --from=builder app/productcatalogservice /app/server
 
-EXPOSE 5050
+COPY ./src/products.json .
 
-USER appuser
+EXPOSE 3550
 
-ENTRYPOINT ["/app/checkoutservice"]
+ENTRYPOINT ["/app/server"]
