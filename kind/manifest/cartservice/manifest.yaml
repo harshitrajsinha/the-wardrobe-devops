@@ -1,0 +1,80 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: cartservice
+
+# ---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: cartservice
+#   labels:
+#     app: cartservice
+#   namespace: cartservice
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: cartservice-app
+#   template:
+#     metadata:
+#       labels:
+#         app.kubernetes.io/name: cartservice-app
+#     spec:
+#       # serviceAccountName: cartservice
+#       # terminationGracePeriodSeconds: 5
+#       # securityContext:
+#       #   fsGroup: 1000
+#       #   runAsGroup: 1000
+#       #   runAsNonRoot: true
+#       #   runAsUser: 1000
+#       containers:
+#       - name: cartservice-container
+#         image: test/cartservice:latest
+#         imagePullPolicy: Never
+#         ports:
+#         - containerPort: 7070
+#         env:
+#         - name: REDIS_ADDR
+#           # value: "redis-svc:6379" # value: "productcatalogservice-svc:3550" # value: "productcatalogservice-svc:3550" ######## This is valid only when cartservice and redis are in same namespace, otherwise FQDNS
+#           value: "redis-svc.redis.svc.cluster.local:6379"
+#         # resources:
+#         #   requests:
+#         #     cpu: 200m
+#         #     memory: 64Mi
+#         #   limits:
+#         #     cpu: 300m
+#         #     memory: 128Mi
+#         # readinessProbe:
+#         #   initialDelaySeconds: 15
+#         #   grpc:
+#         #     port: 7070
+#         # livenessProbe:
+#         #   initialDelaySeconds: 15
+#         #   periodSeconds: 10
+#         #   grpc:
+#         #     port: 7070
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: cartservice-svc
+#   labels:
+#     app: cartservice
+#   namespace: cartservice
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app.kubernetes.io/name: cartservice-app # match with deployment (pod)
+#   ports:
+#   - name: grpc
+#     protocol: TCP
+#     port: 7070
+#     targetPort: 7070
+
+# # ---
+# # apiVersion: v1
+# # kind: ServiceAccount
+# # metadata:
+# #   name: cartservice

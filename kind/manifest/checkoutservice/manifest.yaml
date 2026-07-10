@@ -1,0 +1,94 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: checkoutservice
+
+# ---
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: checkoutservice
+#   labels:
+#     app: checkoutservice
+#   namespace: checkoutservice
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app.kubernetes.io/name: checkoutservice-app
+#   template:
+#     metadata:
+#       labels:
+#         app.kubernetes.io/name: checkoutservice-app
+#     spec:
+#       # serviceAccountName: checkoutservice
+#       # securityContext:
+#       #   fsGroup: 1000
+#       #   runAsGroup: 1000
+#       #   runAsNonRoot: true
+#       #   runAsUser: 1000
+#       containers:
+#         - name: checkoutservice-container
+#           # securityContext:
+#           #   allowPrivilegeEscalation: false
+#           #   capabilities:
+#           #     drop:
+#           #       - ALL
+#           #   privileged: false
+#           #   readOnlyRootFilesystem: true
+#           image: test/checkoutservice:latest
+#           imagePullPolicy: Never
+#           ports:
+#           - containerPort: 5050
+#           # readinessProbe:
+#           #   grpc:
+#           #     port: 5050
+#           # livenessProbe:
+#           #   grpc:
+#           #     port: 5050
+#           env:
+#           - name: PORT
+#             value: "5050"
+#           - name: PRODUCT_CATALOG_SERVICE_ADDR
+#             # value: "productcatalogservice-svc:3550" # value: "productcatalogservice-svc:3550" ######## This is valid only when frontend and checkoutservice are in same namespace, otherwise FQDNS
+#             value: "productcatalogservice-svc.productcatalogservice.svc.cluster.local:3550"
+#           # - name: SHIPPING_SERVICE_ADDR
+#           #   value: "shippingservice:50051"
+#           # - name: PAYMENT_SERVICE_ADDR
+#           #   value: "paymentservice:50051"
+#           # - name: EMAIL_SERVICE_ADDR
+#           #   value: "emailservice:5000"
+#           - name: CURRENCY_SERVICE_ADDR
+#             value: "currencyservice-svc.currencyservice.svc.cluster.local:7000"
+#           - name: CART_SERVICE_ADDR
+#             value: "cartservice-svc.cartservice.svc.cluster.local:7070"
+#           # resources:
+#           #   requests:
+#           #     cpu: 100m
+#           #     memory: 64Mi
+#           #   limits:
+#           #     cpu: 200m
+#           #     memory: 128Mi
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: checkoutservice-svc
+#   labels:
+#     app: checkoutservice
+#   namespace: checkoutservice
+# spec:
+#   type: ClusterIP
+#   selector:
+#     app.kubernetes.io/name: checkoutservice-app
+#   ports:
+#   - name: grpc
+#     protocol: TCP
+#     port: 5050
+#     targetPort: 5050
+# # ---
+# # apiVersion: v1
+# # kind: ServiceAccount
+# # metadata:
+# #   name: checkoutservice

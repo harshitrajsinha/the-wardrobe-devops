@@ -1,0 +1,99 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: frontendns
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:211125424910:certificate/83e2ca90-89fd-4745-9ab4-2296cf5891a2"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/group.name: boutique-shared-alb
+    alb.ingress.kubernetes.io/subnets: "subnet-09ad256610006578d,subnet-083ebf5b621394ffe" # public subnets since internet-facing scheme
+spec:
+  ingressClassName: alb
+  rules:
+      - host: harshitrajsinha.fun
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /product
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /cart
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /setCurrency
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /logout
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /assistant
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /product-meta
+              pathType: Prefix
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /bot
+              pathType: Prefix
+              backend:
+                service:
+                  name:
+                    frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /robots.txt
+              pathType: Exact
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080
+
+            - path: /_healthz
+              pathType: Exact
+              backend:
+                service:
+                  name: frontend-svc
+                  port:
+                    number: 8080

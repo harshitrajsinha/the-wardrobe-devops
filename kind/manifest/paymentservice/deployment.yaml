@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice
+  labels:
+    app: paymentservice
+  namespace: paymentns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paymentservice-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: paymentservice-app
+    spec:
+      containers:
+      - name: paymentservice-container
+        # image: test/paymentservice:latest
+        image: 211125424910.dkr.ecr.us-east-1.amazonaws.com/paymentns/payment:v1
+        imagePullPolicy: IfNotPresent
+        # imagePullPolicy: Never
+        ports:
+        - containerPort: 50052
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: paymentservice-config
+              key: port
+        - name: DISABLE_PROFILER
+          valueFrom:
+            configMapKeyRef:
+              name: paymentservice-config
+              key: disable-profiler
+        - name: OTEL_SERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: paymentservice-config
+              key: otel-service
+        - name: ENABLE_TRACING
+          valueFrom:
+            configMapKeyRef:
+              name: paymentservice-config
+              key: enable-tracing
+        - name: COLLECTOR_SERVICE_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: paymentservice-config
+              key: collector-addr
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi

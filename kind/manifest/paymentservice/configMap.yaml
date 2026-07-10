@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paymentservice-config
+  namespace: paymentns
+data:
+  port: "50052"
+  collector-addr: "localhost:1000"
+  disable-profiler: "0"
+  enable-tracing: "0"
+  otel-service: ""
