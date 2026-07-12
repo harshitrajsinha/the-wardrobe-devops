@@ -44,6 +44,10 @@ jobs:
       - name: Download dependencies
         working-directory: src/frontend/src
         run: go mod download
+
+      - name: Build to check errors
+        working-directory: src/frontend/src
+        run: go build ./...
       
       - name: Vulnerability scan
         working-directory: src/frontend/src
@@ -59,7 +63,7 @@ jobs:
         with:
           scan-type: 'fs'
           scanners: vuln,secret,misconfig
-          scan-ref: ./src/frontend
+          scan-ref: src/frontend
           format: table
           exit-code: 1
           severity: HIGH,CRITICAL
@@ -73,7 +77,7 @@ jobs:
           scan-type: 'fs'
           format: 'github'
           output: 'dependency-results.sbom.json'
-          scan-ref: ./src/frontend
+          scan-ref: src/frontend
           skip-setup-trivy: true
           github-pat: ${{ secrets.GITHUB_TOKEN }}
 
@@ -97,7 +101,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9.2.0
         with:
-          version: latest
+          working-directory: src/frontend/src
         
   unit-test:
     needs: [security-scan]
@@ -115,10 +119,16 @@ jobs:
         with:
           go-version: '1.25'
       
-      - name: Build app
-        run: go build -o frontend.go
+      - name: Download dependencies
+        working-directory: src/frontend/src
+        run: go mod download
+
+      - name: Build to check errors
+        working-directory: src/frontend/src
+        run: go build ./...
 
       - name: Run go test
+        working-directory: src/frontend/src
         run: go test ./...
 
   image-build-release:
