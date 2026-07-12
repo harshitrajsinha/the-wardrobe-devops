@@ -1,4 +1,4 @@
-FROM node:20.20.2-alpine AS builder
+FROM node:24.18.0-alpine AS builder
 
 RUN apk add --update --no-cache \
     python3 \
