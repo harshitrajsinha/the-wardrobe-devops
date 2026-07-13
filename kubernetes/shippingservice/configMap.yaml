@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shippingservice-config
+  namespace: shippingns
+data:
+  port: "50051"
+  collector-addr: "localhost:1000"
+  disable-profiler: "0"
+  disable-tracing: "0"
+  disable-stats: "0"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: currencyservice-config
+  namespace: currencyns
+data:
+  port: "{{ .Values.currencyservice.service.port }}"
+  disable-profiler: "1"
+  enable-tracing: "0"
+  collector-svc-addr: "localhost:1000"

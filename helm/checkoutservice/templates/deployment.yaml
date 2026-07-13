@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  labels:
+    app: checkoutservice
+  namespace: checkoutns
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: checkoutservice-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: checkoutservice-app
+    spec:
+      containers:
+        - name: checkoutservice-container
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: {{ .Values.checkoutservice.service.port }}
+          env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: port
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: productcatalog-svc-addr
+          - name: CURRENCY_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: currency-svc-addr
+          - name: CART_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: cart-svc-addr
+          - name: SHIPPING_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: shipping-svc-addr
+          - name: PAYMENT_SERVICE_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: checkoutservice-config
+                key: payment-svc-addr
+          resources:
+            requests:
+              cpu: 100m
+              memory: 50Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

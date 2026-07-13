@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalogservice-svc
+  labels:
+    app: productcatalogservice
+  namespace: productcatalogns
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: productcatalogservice-app
+  ports:
+  - name: grpc
+    protocol: TCP
+    port: {{ .Values.productcatalogservice.service.port }}
+    targetPort: {{ .Values.productcatalogservice.service.port }}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: frontendns
+data:
+  port: "{{ .Values.frontend.service.port }}"
+  productcatalog-svc-addr: "productcatalogservice-svc.productcatalogns.svc.cluster.local:{{ .Values.productcatalogservice.service.port }}"
+  currency-svc-addr: "currencyservice-svc.currencyns.svc.cluster.local:{{ .Values.currencyservice.service.port }}"
+  cart-svc-addr: "cartservice-svc.cartns.svc.cluster.local:{{ .Values.cartservice.service.port }}"
+  checkout-svc-addr: "checkoutservice-svc.checkoutns.svc.cluster.local:{{ .Values.checkoutservice.service.port }}"
+  shipping-svc-addr: "shippingservice-svc.shippingns.svc.cluster.local:{{ .Values.shippingservice.service.port }}"
+  enable-profiler: "0"
+  enable-tracing: "0"
+  listen-addr: "0.0.0.0"
+  base-url: ""

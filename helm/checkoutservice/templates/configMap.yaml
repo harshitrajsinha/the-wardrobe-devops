@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkoutservice-config
+  namespace: checkoutns
+data:
+  port: "{{ .Values.checkoutservice.service.port }}"
+  productcatalog-svc-addr: "productcatalogservice-svc.productcatalogns.svc.cluster.local:{{ .Values.productcatalogservice.service.port }}"
+  currency-svc-addr: "currencyservice-svc.currencyns.svc.cluster.local:{{ .Values.currencyservice.service.port }}"
+  cart-svc-addr: "cartservice-svc.cartns.svc.cluster.local:{{ .Values.cartservice.service.port }}"
+  payment-svc-addr: "paymentservice-svc.paymentns.svc.cluster.local:{{ .Values.paymentservice.service.port }}"
+  shipping-svc-addr: "shippingservice-svc.shippingns.svc.cluster.local:{{ .Values.shippingservice.service.port }}"

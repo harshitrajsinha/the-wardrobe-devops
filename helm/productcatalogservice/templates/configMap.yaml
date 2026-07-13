@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: productcatalog-config
+  namespace: productcatalogns
+data:
+  port: "{{ .Values.productcatalogservice.service.port }}"
+  collector-addr: "localhost:1000"
+  disable-profiler: "1"
+  enable-tracing: "0"
+  extra-latency: ""

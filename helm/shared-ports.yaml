@@ -1,0 +1,35 @@
+cartservice:
+  service:
+    port: 7070
+
+redis:
+  service:
+    port: 6379
+
+checkoutservice:
+  service:
+    port: 5050
+
+currencyservice:
+  service:
+    port: 7000
+
+frontend:
+  service:
+    port: 8080
+
+paymentservice:
+  service:
+    port: 50052
+
+productcatalogservice:
+  service:
+    port: 3550
+
+redis:
+  service:
+    port: 6379
+
+shippingservice:
+  service:
+    port: 50051

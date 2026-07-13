@@ -1,0 +1,4 @@
+replicaCount: 1
+image:
+  repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/cartns/cart
+  tag: 43a17b08ae116da9fc6c2b6a39c66a5f206b149f
