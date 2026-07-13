@@ -1,0 +1,208 @@
+name: CI pipeline - cart, to run security scan, test, create and push cart docker image
+
+on:
+  push:
+    branches:
+      # - main
+      - dev
+    paths:
+      - 'src/cartservice/**'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: src/cartservice
+
+jobs:
+
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+
+      ### Secrets Scan
+
+      - name: Secrets scan
+        uses: gitleaks/gitleaks-action@v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_NOTIFY_USER_LIST: '@harshitrajsinha'
+
+      ### Setup .NET
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
+      ### Restore dependencies
+
+      - name: Restore dependencies
+        working-directory: src/cartservice/src
+        run: dotnet restore
+
+      ### Build
+
+      - name: Build
+        working-directory: src/cartservice/src
+        run: dotnet build --configuration Release --no-restore
+
+      ### Dependency Vulnerability Scan
+
+      - name: Scan NuGet dependencies
+        working-directory: src/cartservice/src
+        run: |
+          dotnet list package --vulnerable --include-transitive
+
+      ### Trivy Filesystem Scan
+
+      - name: Scan file system
+        if: github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: src/cartservice
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          format: table
+          exit-code: 1
+
+      ### SBOM generation
+
+      - name: Generate SBOM
+        if: github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: src/cartservice
+          format: github
+          output: dependency-results.sbom.json
+          skip-setup-trivy: true
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
+
+
+  linting:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        working-directory: src/cartservice/src
+        run: dotnet restore
+
+      - name: Install dotnet-format
+        run: dotnet tool update -g dotnet-format
+
+      - name: Verify formatting
+        working-directory: src/cartservice/src
+        run: dotnet format --verify-no-changes
+
+  unit-test:
+    needs: security-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        working-directory: src/cartservice/src
+        run: dotnet restore
+
+      - name: Build
+        working-directory: src/cartservice/src
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        working-directory: src/cartservice/tests
+        run: dotnet test --configuration Release --no-build
+
+
+  image-build-release:
+    needs: security-scan
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      IMAGE_NAME: cartns/cart
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: docker/setup-buildx-action@v4.1.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-actions-ecr-push
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Login to ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build and tag image
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./src/cartservice
+          file: ./src/cartservice/Dockerfile
+          push: false
+          load: true
+          tags: |
+            ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      ## Scan docker image using trivy
+      - name: Scan Docker image
+        if: github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: 1
+
+      # SBOM generation
+      - name: Generate Docker SBOM
+        if: github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: cyclonedx
+          output: docker-image.sbom.json
+          skip-setup-trivy: true
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-sbom-docker-image-report
+          path: docker-image.sbom.json
+
+      # Push image to ECR
+      - name: Push image to ECR
+        run: |
+          docker push \
+          ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${IMAGE_NAME}:${IMAGE_TAG}
