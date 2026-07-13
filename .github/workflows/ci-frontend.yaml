@@ -213,7 +213,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
 
     needs: [image-build-release]
 
