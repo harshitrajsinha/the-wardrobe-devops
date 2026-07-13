@@ -1,10 +1,9 @@
 name: CI pipeline - shipping, to run security scan, test, create and push shipping docker image
 
 on:
-  push:
+  push:   # change to pull_request in production
     branches:
-      # - main
-      - dev
+      - main
     paths:
       - 'src/shippingservice/**'
       - '.github/workflows/**' # to be removed in production
@@ -207,4 +206,32 @@ jobs:
       # Push image to ECR
       - name: Push image to ECR
         run: docker push ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/$IMAGE_NAME:$IMAGE_TAG
-      
+  
+  update-newtag-in-helm-chart:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    needs: [image-build-release]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6.0.2
+  
+
+    - name: Update tag in Helm chart
+      working-directory: .
+      run: |
+        sed -i 's/tag: .*/tag: "${{ github.sha }}"/' helm/shippingservice/values.yaml
+
+    - name: Commit and push changes
+      working-directory: .
+      run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add helm/shippingservice/values.yaml
+          git commit -m "Update shippingservice image tag to $IMAGE_TAG" || echo "No changes"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+
+          git push
