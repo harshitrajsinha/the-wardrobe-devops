@@ -1,0 +1,4 @@
+replicaCount: 1
+image:
+  repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/currencyns/currency
+  tag: 478d58c788f5d5d5b8a03372a7579fd0dd3fd0ad

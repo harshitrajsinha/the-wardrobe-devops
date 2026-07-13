@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice-svc
+  labels:
+    app: paymentservice
+  namespace: paymentns
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: paymentservice-app
+  ports:
+  - name: grpc
+    protocol: TCP
+    port: 50052
+    targetPort: 50052

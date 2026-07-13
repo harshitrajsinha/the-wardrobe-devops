@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice-svc
+  labels:
+    app: currencyservice
+  namespace: currencyns
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: currencyservice-app
+  ports:
+  - name: grpc
+    port: {{ .Values.currencyservice.service.port }}
+    targetPort: {{ .Values.currencyservice.service.port }}

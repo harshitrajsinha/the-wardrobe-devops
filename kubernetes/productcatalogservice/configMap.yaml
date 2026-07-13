@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: productcatalog-config
+  namespace: productcatalogns
+data:
+  port: "3550"
+  collector-addr: "localhost:1000"
+  disable-profiler: "1"
+  enable-tracing: "0"
+  extra-latency: ""

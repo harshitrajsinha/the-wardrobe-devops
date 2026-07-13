@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cartservice-config
+  namespace: cartns
+data:
+  redis-conn-addr: "redis-svc.redisns.svc.cluster.local:6379"

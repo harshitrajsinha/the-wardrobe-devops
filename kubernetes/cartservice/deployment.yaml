@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartservice
+  labels:
+    app: cartservice
+  namespace: cartns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cartservice-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cartservice-app
+    spec:
+      containers:
+      - name: cartservice-container
+        # image: test/cartservice:latest
+        image: 211125424910.dkr.ecr.us-east-1.amazonaws.com/cartns/cart:v1
+        imagePullPolicy: IfNotPresent
+        # imagePullPolicy: Never
+        ports:
+        - containerPort: 7070
+        env:
+        - name: REDIS_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: cartservice-config
+              key: redis-conn-addr
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 128Mi
