@@ -27,4 +27,8 @@ helm lint cartservice ./cartservice -f shared-ports.yaml
 helm upgrade cartservice ./cartservice -f shared-ports.yaml -n cartns
 ```
 
+```
+helm uninstall cartservice -n cartns
+```
+
 * In this project a common file `shared-ports.yaml` is referenced as config yaml of each service uses port no of other service.
