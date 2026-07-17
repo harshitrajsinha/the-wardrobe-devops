@@ -76,7 +76,7 @@ resource "aws_iam_role_policy" "bastion_eks_describe" {
     Version = "2012-10-17"
     Statement = [{
       Effect   = "Allow"
-      Action   = ["eks:DescribeCluster", "eks:ListClusters", "eks:AccessKubernetesApi", "sts:GetCallerIdentity"]
+      Action   = ["eks:DescribeCluster", "eks:ListClusters", "eks:AccessKubernetesApi", "sts:GetCallerIdentity", "ec2:DescribeVpcs", "ec2:DescribeVpcAttribute"]
       Resource = "*"
     }]
   })
@@ -91,16 +91,25 @@ resource "aws_iam_instance_profile" "bastion" {
 resource "aws_eks_access_entry" "bastion" {
   cluster_name  = var.cluster_name
   principal_arn = aws_iam_role.bastion.arn
+
+  depends_on = [
+    module.eks
+  ]
 }
 
 resource "aws_eks_access_policy_association" "bastion_view" {
   cluster_name  = "wardrobe-cluster"
   principal_arn = aws_iam_role.bastion.arn
-  policy_arn    = "arn:aws:iam::aws:policy/eks/policy/AmazonEKSViewPolicy"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
   access_scope {
     type = "cluster"
   }
+
+  depends_on = [
+    module.eks,
+    aws_eks_access_entry.bastion
+  ]
 }
 
 
@@ -118,7 +127,7 @@ module "lb_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
 
-  role_name = "alb-controller"
+  role_name = "alb-controller-role"
 
   attach_load_balancer_controller_policy = true
 

@@ -8,11 +8,12 @@ locals {
     "checkoutns",
     "frontendns",
     "paymentns",
-    "shippingns"
+    "shippingns",
+    "argocd"
   ]
 }
 
-resource "kubernetes_namespace" "application" {
+resource "kubernetes_namespace_v1" "application" {
 
   for_each = toset(local.application_namespaces)
 

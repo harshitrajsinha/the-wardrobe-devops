@@ -32,3 +32,12 @@ helm uninstall cartservice -n cartns
 ```
 
 * In this project a common file `shared-ports.yaml` is referenced as config yaml of each service uses port no of other service.
+
+
+* Install argocd and its ingress resource (make sure to change public subnet id in ingress file)
+```
+kubectl create namespace argocd  (if not created via terraform)
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+cd kubernetes
+kubectl apply -f argocd-ingress.yaml
+```

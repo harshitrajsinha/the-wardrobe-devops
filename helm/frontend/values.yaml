@@ -2,7 +2,3 @@ replicaCount: 1
 image:
   repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/frontendns/frontend
   tag: "56066fd3bcaf2811a3eecf07aebbb04cf8e40a1a"
-ingress:
-  certificateArn: "arn:aws:acm:us-east-1:211125424910:certificate/83e2ca90-89fd-4745-9ab4-2296cf5891a2"
-  host: "harshitrajsinha.fun"
-  subnetIdList: "subnet-04d0cb2766dae49b4,subnet-00915c1484d420e88"
