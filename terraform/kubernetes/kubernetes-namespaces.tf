@@ -26,4 +26,6 @@ resource "kubernetes_namespace_v1" "application" {
     }
 
   }
+
+  depends_on = [helm_release.aws_load_balancer_controller]
 }

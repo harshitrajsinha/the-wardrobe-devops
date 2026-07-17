@@ -10,7 +10,6 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: "{{ .Values.ingress.certificateArn }}"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/group.name: boutique-shared-alb
-    alb.ingress.kubernetes.io/subnets: "{{ .Values.ingress.subnetIdList }}" # public subnets since internet-facing scheme
 spec:
   ingressClassName: alb
   rules:

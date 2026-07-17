@@ -7,10 +7,11 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/certificate-arn: "{{ .Values.ingress.certificateArn }}"
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:211125424910:certificate/83e2ca90-89fd-4745-9ab4-2296cf5891a2"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/group.name: boutique-shared-alb
-    alb.ingress.kubernetes.io/subnets: "subnet-04d0cb2766dae49b4,subnet-00915c1484d420e88" # public subnets since internet-facing scheme
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTPS
     alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/success-codes: "200"
 spec:
