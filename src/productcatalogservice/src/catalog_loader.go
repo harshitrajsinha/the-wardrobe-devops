@@ -30,6 +30,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// calls loadCatalogFromLocalFile() to load products from catalog
 func loadCatalog(catalog *pb.ListProductsResponse) error {
 	catalogMutex.Lock()
 	defer catalogMutex.Unlock()
@@ -41,6 +42,7 @@ func loadCatalog(catalog *pb.ListProductsResponse) error {
 	return loadCatalogFromLocalFile(catalog)
 }
 
+// loads products by reading 'products.json' file
 func loadCatalogFromLocalFile(catalog *pb.ListProductsResponse) error {
 	log.Info("loading catalog from local products.json file...")
 

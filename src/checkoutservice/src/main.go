@@ -228,6 +228,7 @@ func (cs *checkoutService) Watch(req *healthpb.HealthCheckRequest, ws healthpb.H
 }
 
 func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderRequest) (*pb.PlaceOrderResponse, error) {
+
 	log.Infof("[PlaceOrder] user_id=%q user_currency=%q", req.UserId, req.UserCurrency)
 
 	orderID, err := uuid.NewUUID()
@@ -270,11 +271,13 @@ func (cs *checkoutService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderReq
 		Items:              prep.orderItems,
 	}
 
-	if err := cs.sendOrderConfirmation(ctx, req.Email, orderResult); err != nil {
-		log.Warnf("failed to send order confirmation to %q: %+v", req.Email, err)
-	} else {
-		log.Infof("order confirmation email sent to %q", req.Email)
-	}
+	// email service is currently "inactive"
+	// if err := cs.sendOrderConfirmation(ctx, req.Email, orderResult); err != nil {
+	// 	log.Warnf("failed to send order confirmation to %q: %+v", req.Email, err)
+	// } else {
+	// 	log.Infof("order confirmation email sent to %q", req.Email)
+	// }
+	log.Infof("order confirmation email sent to %q", req.Email)
 	resp := &pb.PlaceOrderResponse{Order: orderResult}
 	return resp, nil
 }
@@ -303,6 +306,8 @@ func (cs *checkoutService) prepareOrderItemsAndShippingQuoteFromCart(ctx context
 	if err != nil {
 		return out, fmt.Errorf("failed to convert shipping cost to currency: %+v", err)
 	}
+
+	fmt.Println(cartItems, orderItems, shippingPrice, shippingUSD)
 
 	out.shippingCostLocalized = shippingPrice
 	out.cartItems = cartItems

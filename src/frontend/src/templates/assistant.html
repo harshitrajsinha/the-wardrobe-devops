@@ -17,11 +17,11 @@
 {{ define "assistant" }}
 
 {{ template "header" . }}
-<div {{ with $.platform_css }} class="{{.}}" {{ end }}>
+<!-- <div {{ with $.platform_css }} class="{{.}}" {{ end }}>
   <span class="platform-flag">
     {{$.platform_name}}
   </span>
-</div>
+</div> -->
 
 <main role="main">
   <div class="container">
@@ -30,15 +30,17 @@
         <div id="chat-modal" class="chat-modal">
           <div id="bot-messages" class="bot-messages">
             <p class="bot-message">
-              <span class="bot-message-text">Hi, I'm the Cymbal Shops assistant. I can help you with your shopping experience.</span>
+              <span class="bot-message-text">Hi, I'm the Cymbal Shops assistant. I can help you with your shopping
+                experience.</span>
             </p>
             <p class="bot-message">
               <span class="bot-message-text">What can I help you with?</span>
             </p>
           </div>
           <div class="bot-input">
-            <input id="bot-input-text" type="text" style="margin-right: 30px;" class="bot-input-text" placeholder="Recommend me items...">
-            <input type="file" class="bot-input-file-button"  onchange="getBase64()">
+            <input id="bot-input-text" type="text" style="margin-right: 30px;" class="bot-input-text"
+              placeholder="Recommend me items...">
+            <input type="file" class="bot-input-file-button" onchange="getBase64()">
             <button id="bot-input-button" class="bot-input-button">Send</button>
           </div>
         </div>
@@ -49,7 +51,7 @@
 
 <script>
   var image;
-  function getBase64 ()  {
+  function getBase64() {
     var file = document.querySelector('input[type=file]')['files'][0];
     var reader = new FileReader();
     var baseString;
@@ -88,7 +90,7 @@
   }
 
   async function handleButtonClick() {
-    if(!botinput.value || !botinput.value.trim){
+    if (!botinput.value || !botinput.value.trim) {
       return;
     }
 
@@ -103,7 +105,7 @@
     const imageElement = document.createElement("img");
     imageElement.src = image;
     imageElement.classList.add("user-image");
-    imageElement.onerror = function() { this.style.display = 'none'; };
+    imageElement.onerror = function () { this.style.display = 'none'; };
     userMessageSpan.innerText = message;
     userMessageSpan.classList.add("user-message-text");
     usermessage.classList.add("user-message");
@@ -179,7 +181,7 @@
         const botProductImg = document.createElement("img");
         botProductImg.src = product["picture"];
         botProductImg.classList.add("bot-product-img");
-        botProductImg.onerror = function() { this.style.display = 'none'; };
+        botProductImg.onerror = function () { this.style.display = 'none'; };
         botProductDiv.appendChild(botProductImg);
 
         // Construct product description div

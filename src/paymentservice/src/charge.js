@@ -46,6 +46,7 @@ class UnacceptedCreditCard extends CreditCardError {
   }
 }
 
+// card is considered expired if it is less than or equal to (actual) current month and (actual) current year
 class ExpiredCreditCard extends CreditCardError {
   constructor (number, month, year) {
     super(`Your credit card (ending ${number.substr(-4)}) expired on ${month}/${year}`);
@@ -62,6 +63,7 @@ module.exports = function charge (request) {
   const { amount, credit_card: creditCard } = request;
   const cardNumber = creditCard.credit_card_number;
   const cardInfo = cardValidator(cardNumber);
+
   const {
     card_type: cardType,
     valid

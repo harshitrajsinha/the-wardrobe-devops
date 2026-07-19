@@ -599,11 +599,12 @@ func renderMoney(money pb.Money) string {
 func renderCurrencyLogo(currencyCode string) string {
 	logos := map[string]string{
 		"USD": "$",
-		"CAD": "$",
-		"JPY": "¥",
 		"EUR": "€",
-		"TRY": "₺",
+		"JPY": "¥",
 		"GBP": "£",
+		"PLN": "zł",
+		"INR": "₹",
+		"SGD": "S$",
 	}
 
 	logo := "$" //default

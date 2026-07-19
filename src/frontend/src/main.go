@@ -47,12 +47,13 @@ const (
 
 var (
 	whitelistedCurrencies = map[string]bool{
-		"USD": true,
-		"EUR": true,
-		"CAD": true,
-		"JPY": true,
-		"GBP": true,
-		"TRY": true,
+		"USD": true, // US Dollar
+		"EUR": true, // European Euros (Base currency)
+		"JPY": true, // Japanese Yen
+		"GBP": true, // Britain Pound
+		"PLN": true, // Polish zloty
+		"INR": true, // Indian Rupees
+		"SGD": true, // Singaporean Dollar
 	}
 
 	baseUrl = ""

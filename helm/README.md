@@ -37,7 +37,43 @@ helm uninstall cartservice -n cartns
 * Install argocd and its ingress resource (make sure to change public subnet id in ingress file)
 ```
 kubectl create namespace argocd  (if not created via terraform)
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --server-side
+
 cd kubernetes
 kubectl apply -f argocd-ingress.yaml
+
+kubectl get secrets -n argocd
+kubectl edit secret argocd-initial-admin-secret -n argocd
 ```
+
+* argocd cart service app.yaml
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cart
+spec:
+  destination:
+    namespace: cartns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/cartservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+```
+
+
+### Learnings
+
+1. ingress -> public subnet id tagging for auto-discovery by alb controller
+2. using external tools for fetching secret values for manifest + argocd

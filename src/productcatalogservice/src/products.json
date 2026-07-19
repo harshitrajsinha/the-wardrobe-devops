@@ -150,7 +150,7 @@
          "picture":"/static/img/products/baseball-cap.png",
          "priceUsd":{
             "currencyCode":"USD",
-            "units":24,
+            "units":10,
             "nanos":990000000
          },
          "categories":[
@@ -206,7 +206,7 @@
          "picture":"/static/img/products/wireless-earbuds.png",
          "priceUsd":{
             "currencyCode":"USD",
-            "units":129,
+            "units":20,
             "nanos":990000000
          },
          "categories":[

@@ -38,6 +38,7 @@ func (p *productCatalog) Watch(req *healthpb.HealthCheckRequest, ws healthpb.Hea
 	return status.Errorf(codes.Unimplemented, "health check via Watch not implemented")
 }
 
+// calls parseCatalog() to load products from catalog
 func (p *productCatalog) ListProducts(context.Context, *pb.Empty) (*pb.ListProductsResponse, error) {
 	time.Sleep(extraLatency)
 
@@ -71,6 +72,7 @@ func (p *productCatalog) SearchProducts(ctx context.Context, req *pb.SearchProdu
 	return &pb.SearchProductsResponse{Results: ps}, nil
 }
 
+// calls loadCatalog() -> catalog_loader.go to load products from catalog
 func (p *productCatalog) parseCatalog() []*pb.Product {
 	if reloadCatalog || len(p.catalog.Products) == 0 {
 		err := loadCatalog(&p.catalog)
