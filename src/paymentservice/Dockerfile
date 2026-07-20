@@ -1,6 +1,5 @@
 FROM node:24.18.0-alpine AS builder
 
-
 RUN apk add --update --no-cache \
     python3 \
     make \
@@ -10,17 +9,17 @@ WORKDIR /app
 
 COPY ./src/package*.json ./
 
-RUN npm install --only=production
+RUN npm ci --omit=dev
 
 FROM alpine:3.23.4
 
-RUN apk add --no-cache nodejs
-
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 
-COPY ./src/. .
+COPY --chown=node:node ./src/. .
+
+USER node
 
 EXPOSE 50052
 
