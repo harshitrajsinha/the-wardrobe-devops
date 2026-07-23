@@ -1,4 +1,4 @@
 replicaCount: 1
 image:
   repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/shippingns/shipping
-  tag: 978809126ad7a4100dc957dcd34cd65bc84ae5f0
+  tag: "6805be1e978060886d68ad29fa9e6a944d20f463"
