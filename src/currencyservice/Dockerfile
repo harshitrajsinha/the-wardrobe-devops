@@ -11,7 +11,7 @@ COPY ./src/package*.json ./
 
 RUN npm ci --omit=dev
 
-FROM alpine:3.23.4
+FROM node:24.18.0-alpine
 
 WORKDIR /app
 

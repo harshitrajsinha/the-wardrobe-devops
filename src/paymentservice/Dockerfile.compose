@@ -13,7 +13,7 @@ COPY src/paymentservice/src/package*.json ./
 
 RUN npm install --only=production
 
-FROM alpine:3.23.4
+FROM node:24.18.0-alpine
 
 RUN apk add --no-cache nodejs
 
