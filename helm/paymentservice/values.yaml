@@ -1,4 +1,4 @@
 replicaCount: 1
 image:
   repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/paymentns/payment
-  tag: "6805be1e978060886d68ad29fa9e6a944d20f463"
+  tag: "7df9b06d6c882bd383a7042767f311890f3384a6"
