@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
   repository: 211125424910.dkr.ecr.us-east-1.amazonaws.com/productcatalogns/productcatalog
-  tag: "795b3a0e395e7fd8926c2daec20af44d4d7bbff3"
+  tag: "6805be1e978060886d68ad29fa9e6a944d20f463"
 metrics:
   port: 9090
