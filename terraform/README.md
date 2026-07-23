@@ -28,7 +28,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret \
     -o jsonpath="{.data.password}" | base64 -d
 ```
 
-5. Install all services via argocd (refer helm/README.md)
+5. Install all microservices app via argocd UI
 
 6. Install prometheus stack
 ```
@@ -63,11 +63,18 @@ kubectl get secret prometheus-grafana \
     -o jsonpath="{.data.admin-user}" | base64 -d
 ```
 
+7. Cleanup
 NOTE: All these ingress (argocd, monitoring) are created via helm and frontend ingress via argocd, so terraform has no idea of these resources and creates problem when `terraform destroy` command is executed before cleaning up these resources.
+
+* Delete all microservices app in argocd UI
+* kubectl delete ingress frontend-ingress -n frontendns  (in case frontend-ingress is not deleted, check first)
 ```
-kubectl delete ingress argocd-ingress -n argocd
+helm uninstall argocd-ingress -n argocd
 helm uninstall argocd -n argocd
+helm uninstall grafana-ingress -n monitoring
+helm uninstall prometheus-ingress -n monitoring
+helm uninstall prometheus -n monitoring
 ```
-* Do the same for monitoring
+* Now run `terraform destroy`
 
 NOTE: If any of the ingress (say argocd) stucks on deletion then run: `kubectl patch ingress argocd-ingress -n argocd -p '{"metadata":{"finalizers":[]}}' --type=merge`

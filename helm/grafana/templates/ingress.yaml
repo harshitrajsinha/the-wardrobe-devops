@@ -17,7 +17,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: {{ .Values.ingress.grafanaHost }}
+    - host: {{ .Values.ingress.grafanahost }}
       http:
         paths:
           - path: /

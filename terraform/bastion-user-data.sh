@@ -85,4 +85,4 @@ helm repo update
 
 ##############################################################
 
-# kubectl patch ingress argocd-ingress -n argocd -p '{"metadata":{"finalizers":[]}}' --type=merge
+sudo chown -R ubuntu:ubuntu /home/ubuntu

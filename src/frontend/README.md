@@ -4,6 +4,7 @@ Run the following command to restore dependencies to `vendor/` directory:
 
     dep ensure --vendor-only
 
+<!-- #e3dcc1 #d7d7d7 -->
 
 ## Running project via Docker
 

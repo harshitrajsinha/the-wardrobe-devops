@@ -1,0 +1,213 @@
+# redis
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+spec:
+  destination:
+    namespace: redisns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/redis
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Cart
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cart
+spec:
+  destination:
+    namespace: cartns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/cartservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Productcatalog
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: productcatalog
+spec:
+  destination:
+    namespace: productcatalogns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/productcatalogservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Payment
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payment
+spec:
+  destination:
+    namespace: paymentns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/paymentservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Shipping
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shipping
+spec:
+  destination:
+    namespace: shippingns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/shippingservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Currency
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: currency
+spec:
+  destination:
+    namespace: currencyns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/currencyservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Checkout
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: checkout
+spec:
+  destination:
+    namespace: checkoutns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/checkoutservice
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
+
+---
+
+# Frontend
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend
+spec:
+  destination:
+    namespace: frontendns
+    server: https://kubernetes.default.svc
+  source:
+    path: helm/frontend
+    repoURL: https://github.com/harshitrajsinha/the-wardrobe-devops.git
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - ../shared-ports.yaml
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+      enabled: true
