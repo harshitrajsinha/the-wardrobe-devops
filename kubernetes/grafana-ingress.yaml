@@ -7,7 +7,7 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/certificate-arn: "{{ .Values.ingress.certificateArn }}"
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:211125424910:certificate/83e2ca90-89fd-4745-9ab4-2296cf5891a2"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/group.name: wardrobe-shared-alb
     alb.ingress.kubernetes.io/backend-protocol: HTTP            # Grafana's service exposes plain HTTP on port 80 not HTTPS
@@ -17,7 +17,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: {{ .Values.ingress.grafanaHost }}
+    - host: grafana.harshitrajsinha.fun
       http:
         paths:
           - path: /

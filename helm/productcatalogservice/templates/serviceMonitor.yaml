@@ -3,10 +3,12 @@ kind: ServiceMonitor
 metadata:
   name: productcatalog
   namespace: productcatalogns
+  labels:
+    release: prometheus
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: productcatalogservice-app
+      app: productcatalogservice # match with service.yaml -> labels
   endpoints:
     - port: metrics
       path: /metrics

@@ -43,7 +43,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
     yamlencode({
 
-      clusterName = data.aws_eks_cluster.wardrobe_eks.endpoint
+      clusterName = data.aws_eks_cluster.wardrobe_eks.name
 
       region = var.region
 

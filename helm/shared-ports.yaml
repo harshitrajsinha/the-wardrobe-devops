@@ -39,5 +39,5 @@ ingress:
   apphost: "harshitrajsinha.fun"
   argocdhost: "argocd.harshitrajsinha.fun"
   grafanahost: "grafana.harshitrajsinha.fun"
-  prometheushost: "prometheus.harshitrajsinha.fun"
+  prometheushost: "prom.harshitrajsinha.fun"
   subnetIdList: "subnet-04d0cb2766dae49b4,subnet-00915c1484d420e88"

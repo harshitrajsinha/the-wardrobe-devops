@@ -35,14 +35,14 @@ if ! command -v kubectl >/dev/null 2>&1; then
 fi
 
 # Configure kubeconfig
-mkdir -p /home/ubuntu/.kube
+sudo -u ubuntu mkdir -p /home/ubuntu/.kube
 
 sudo -u ubuntu aws eks update-kubeconfig \
     --region "${REGION}" \
     --name "${CLUSTER_NAME}" \
     --kubeconfig /home/ubuntu/.kube/config
 
-chown -R ubuntu:ubuntu /home/ubuntu/.kube
+sudo chown -R ubuntu:ubuntu /home/ubuntu/.kube
 
 
 ##############################################################
@@ -83,20 +83,6 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 
 helm repo update
 
-# Install Argo CD
-
-kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-
-helm upgrade --install argocd argo/argo-cd \
-    --namespace argocd \
-    --wait
-
-# Install Prometheus + Grafana
-
-kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
-
-helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
-    --namespace monitoring \
-    --wait
-
 ##############################################################
+
+# kubectl patch ingress argocd-ingress -n argocd -p '{"metadata":{"finalizers":[]}}' --type=merge

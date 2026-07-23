@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: productcatalogservice-svc
   labels:
-    app: productcatalogservice
+    app: productcatalogservice  # this is matched by service monitor -> matchLabels
   namespace: productcatalogns
 spec:
   type: ClusterIP

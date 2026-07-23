@@ -31,22 +31,13 @@ helm upgrade cartservice ./cartservice -f shared-ports.yaml -n cartns
 helm uninstall cartservice -n cartns
 ```
 
+<hr>
+
 * In this project a common file `shared-ports.yaml` is referenced as config yaml of each service uses port no of other service.
 
-
-* Install argocd and its ingress resource (make sure to change public subnet id in ingress file)
-```
-kubectl create namespace argocd  (if not created via terraform)
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml --server-side
-
-cd kubernetes
-kubectl apply -f argocd-ingress.yaml
-
-kubectl get secrets -n argocd
-kubectl edit secret argocd-initial-admin-secret -n argocd
 ```
 
-* argocd cart service app.yaml
+* For cart service: app.yaml
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -77,20 +68,6 @@ spec:
 
 1. ingress -> public subnet id tagging for auto-discovery by alb controller
 2. using external tools for fetching secret values for manifest + argocd
+3. dependency graph: ingress installed via helm (not managed by terraform) creates hanging problem
 
 
-kubectl get secret -n monitoring
-
-kubectl get secret monitoring-grafana \
-    -n monitoring \
-    -o jsonpath="{.data.admin-password}" | base64 -d
-
-    kubectl get secret monitoring-grafana \
-    -n monitoring \
-    -o jsonpath="{.data.admin-user}" | base64 -d
-
-
-* Argocd
-
-kubectl -n argocd get secret argocd-initial-admin-secret \
-    -o jsonpath="{.data.password}" | base64 -d

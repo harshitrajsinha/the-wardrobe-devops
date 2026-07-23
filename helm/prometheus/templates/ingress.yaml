@@ -24,6 +24,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: monitoring-kube-prometheus-prometheus
+                name: prometheus-kube-prometheus-prometheus
                 port:
                   number: 9090
