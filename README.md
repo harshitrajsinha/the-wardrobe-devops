@@ -2,7 +2,7 @@ Through this project [harshitrajsinha/the-wardrobe-devops](https://github.com/ha
 
 <br>
 
-<img src="./assets/wardrobe-system-design.png" alt="Demo App" width="800" height="400"/>
+<img src="./assets/wardrobe-system-design-compressed.png" alt="Demo App" width="800" height="400"/>
 
 <br>
 
