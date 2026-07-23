@@ -19,11 +19,14 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/productcatalogservice/genproto"
 	"google.golang.org/grpc/credentials/insecure"
@@ -115,6 +118,16 @@ func main() {
 	if os.Getenv("PORT") != "" {
 		port = os.Getenv("PORT")
 	}
+
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+
+		log.Infof("Starting metrics server on :9090")
+
+		if err := http.ListenAndServe(":9090", nil); err != nil {
+			log.Fatalf("metrics server failed: %v", err)
+		}
+	}()
 	log.Infof("starting grpc server at :%s", port)
 	run(port)
 	select {}

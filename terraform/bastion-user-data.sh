@@ -68,3 +68,35 @@ if ! command -v terraform >/dev/null 2>&1; then
 fi
 
 ##############################################################
+
+# Install Helm
+
+if ! command -v helm >/dev/null 2>&1; then
+    curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
+
+# Add argocd repo
+helm repo add argo https://argoproj.github.io/argo-helm
+
+# Add prometheus repo
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+# Install Argo CD
+
+kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+
+helm upgrade --install argocd argo/argo-cd \
+    --namespace argocd \
+    --wait
+
+# Install Prometheus + Grafana
+
+kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
+
+helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+    --namespace monitoring \
+    --wait
+
+##############################################################

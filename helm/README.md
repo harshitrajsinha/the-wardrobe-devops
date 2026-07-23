@@ -1,13 +1,13 @@
 * As per ChatGPT, we should not create namespace via yaml when using helm. Either create namespace along with install command:
 ```
-helm install cartservice ./cartservice -f shared-ports.yaml \
+helm upgrade --install cartservice ./cartservice -f shared-ports.yaml \
   --namespace cartns \
   --create-namespace
 ```
 
 * Use existing namespace if already created
 ```
-helm install cartservice ./cartservice -f shared-ports.yaml --namespace cartns
+helm upgrade --install cartservice ./cartservice -f shared-ports.yaml --namespace cartns
 ```
 
 * Check if values are correctly replaced
@@ -77,3 +77,20 @@ spec:
 
 1. ingress -> public subnet id tagging for auto-discovery by alb controller
 2. using external tools for fetching secret values for manifest + argocd
+
+
+kubectl get secret -n monitoring
+
+kubectl get secret monitoring-grafana \
+    -n monitoring \
+    -o jsonpath="{.data.admin-password}" | base64 -d
+
+    kubectl get secret monitoring-grafana \
+    -n monitoring \
+    -o jsonpath="{.data.admin-user}" | base64 -d
+
+
+* Argocd
+
+kubectl -n argocd get secret argocd-initial-admin-secret \
+    -o jsonpath="{.data.password}" | base64 -d

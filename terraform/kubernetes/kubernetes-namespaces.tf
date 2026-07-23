@@ -9,7 +9,8 @@ locals {
     "frontendns",
     "paymentns",
     "shippingns",
-    "argocd"
+    "argocd",
+    "monitoring"
   ]
 }
 

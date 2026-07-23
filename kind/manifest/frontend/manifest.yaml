@@ -148,7 +148,7 @@
 #     alb.ingress.kubernetes.io/scheme: internet-facing
 #     alb.ingress.kubernetes.io/target-type: ip
 #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-#     alb.ingress.kubernetes.io/group.name: boutique-shared-alb
+#     alb.ingress.kubernetes.io/group.name: wardrobe-shared-alb
 #     alb.ingress.kubernetes.io/subnets: "subnet-09ad256610006578d,subnet-083ebf5b621394ffe"
 # spec:
 #   ingressClassName: alb
