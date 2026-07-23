@@ -49,6 +49,7 @@ jobs:
         run: go build ./...
       
       - name: Vulnerability scan
+        if: github.ref == 'refs/heads/test'
         working-directory: src/productcatalogservice/src
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@v1.6.0

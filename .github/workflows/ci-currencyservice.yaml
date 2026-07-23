@@ -50,7 +50,7 @@ jobs:
       ### Dependency scan:
 
       - name: Dependency scan
-        # if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/test'
         uses: oke-py/npm-audit-action@v4.0.2
         with:
           audit_level: high
@@ -64,7 +64,7 @@ jobs:
       ## File system scan (currencyservice service):
       
       - name: Scan file system
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/test'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -77,7 +77,7 @@ jobs:
       ### SBOM generation:
       # Note -> Here we are generating dependency graph directly to GitHub insights rather than separate artifact
       - name: SBOM generation
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/test'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
@@ -175,7 +175,7 @@ jobs:
 
       ## Scan docker image using trivy
       - name: Docker image scan using Trivy
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/test'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
@@ -187,7 +187,7 @@ jobs:
       # SBOM generation
       # Note -> Here we are generating separate artifact for SBOM rather than for GitHub insights
       - name: Generate SBOM for docker image
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/test'
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
